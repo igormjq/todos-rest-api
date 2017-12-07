@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', routes);
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log(`Api running on port ${port}`);
 });
 
