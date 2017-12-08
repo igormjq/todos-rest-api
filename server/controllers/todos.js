@@ -1,8 +1,8 @@
 const { ObjectID } = require('mongodb');
 
 class Todos {
-    constructor(todo) {
-        this.todo = todo;
+    constructor(model) {
+        this.todo = model;
     }
 
     getAll(req, res) {
@@ -64,6 +64,25 @@ class Todos {
                 })
                 .catch(err => res.status(400).json(err.message));
     };
+
+    deleteById(id, req, res) {
+        
+        if(!Todos.isValidId(id)) {
+            return res.status(400).json({ status: 400, message: 'Bad request: invalid id' });
+        };
+        
+        this.todo
+            .findByIdAndRemove(id)
+                .then(doc => {
+                    let response = {
+                        status: 200,
+                        message: 'Resource successfully removed'
+                    };
+
+                    res.status(200).json(response);
+                })
+                .catch(err => res.status(404).json(err.message));
+    }
 
     static isValidId(id) {
         return ObjectID.isValid(id);

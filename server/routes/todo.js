@@ -25,6 +25,15 @@ router.route('/:id')
         let id = req.params.id;
         
         TodoController.getById(id, req, res);
+    })
+    .delete((req, res) => {
+        let id = req.params.id;
+        console.log('DELETE /todos/:id', id);
+        TodoController.deleteById(id, req, res);
+
+    })
+    .patch((req, res) => {
+
     });
 
 module.exports = router;
