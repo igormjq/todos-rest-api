@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const { ObjectID } = require('mongodb');
 
 class Todos {
@@ -82,10 +84,44 @@ class Todos {
                     res.status(200).json(response);
                 })
                 .catch(err => res.status(404).json(err.message));
-    }
+    };
+
+    updateById(id, body, req, res) {
+
+        let options = { new: true }; //returns
+        
+        if(!Todos.isValidId(id)) {
+            return res.status(400).json({ status: 400, message: 'Bad request: invalid id' });
+        };
+
+        body.completedAt = Todos.isCompleted(body) ? new Date().getTime() : null;
+        body.complete = !!body.completedAt;
+
+        this.todo
+            .findByIdAndUpdate(id, { $set: body }, options)
+                .then(todo => {
+                     
+                    if(todo) 
+                        return res.status(200).json({ 
+                            status: 200, 
+                            data: todo 
+                        });
+                    
+                    res.status(404).json({ status: 404, message: 'Resource not found' });
+
+                })
+                .catch(err => res.status(400).json(err.message));
+    };
 
     static isValidId(id) {
         return ObjectID.isValid(id);
+    }
+
+    static isCompleted (todo) {
+        console.log('todo received', todo);
+        console.log(`is completed ? ${_.isBoolean(todo.completed) && todo.completed}`);
+
+        return _.isBoolean(todo.completed) && todo.completed;
     }
 
 

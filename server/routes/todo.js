@@ -1,4 +1,5 @@
 const express = require('express');
+const _ = require('lodash');
 
 const router = express.Router();
 const Todo = require('../models/todo');
@@ -28,12 +29,15 @@ router.route('/:id')
     })
     .delete((req, res) => {
         let id = req.params.id;
-        console.log('DELETE /todos/:id', id);
+
         TodoController.deleteById(id, req, res);
 
     })
     .patch((req, res) => {
+        let id = req.params.id;
+        let body = _.pick(req.body, ['text', 'completed']);
 
+        TodoController.updateById(id, body, req, res);
     });
 
 module.exports = router;
