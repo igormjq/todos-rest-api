@@ -88,7 +88,7 @@ class Todos {
 
     updateById(id, body, req, res) {
 
-        let options = { new: true }; //returns
+        let options = { new: true };
         
         if(!Todos.isValidId(id)) {
             return res.status(400).json({ status: 400, message: 'Bad request: invalid id' });
@@ -118,12 +118,8 @@ class Todos {
     }
 
     static isCompleted (todo) {
-        console.log('todo received', todo);
-        console.log(`is completed ? ${_.isBoolean(todo.completed) && todo.completed}`);
-
         return _.isBoolean(todo.completed) && todo.completed;
-    }
-
+    };
 
 };
 
