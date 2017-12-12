@@ -19,16 +19,18 @@ class Users {
   };
 
   static sendError(e) {
-    
-    let error = {};
+
+    let error = {
+      status: null,
+      message: e.message
+    };
 
     if (e.name === 'ValidationError') {
       error.status = 400;
-      error.message = 'Validation error. Please check sent data';
-      error.missingKeys = Reflect.ownKeys(e.errors);
+      error.invalid_data = Reflect.ownKeys(e.errors);
     } else if (e.code === 11000) {
       error.status = 409;
-      error.message = 'E-mail address already in use. Duplicates not allowed';
+      error.message = 'E-mail address already in use. Duplicates not allowed.';
     };
 
     return error;

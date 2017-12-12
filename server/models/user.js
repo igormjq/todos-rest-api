@@ -8,10 +8,10 @@ let UserSchema = new mongoose.Schema({
         required: true,
         minlength: 1,
         unique: true,
-        // validate: {
-        //     validator: validator.isEmail(value),
-        //     message: '{VALUE} is not a valid e-mail'
-        // }
+        validate: {
+            validator: value => validator.isEmail(value),
+            message: '{VALUE} is not a valid e-mail'
+        }
     },
     password: {
         type: String,
