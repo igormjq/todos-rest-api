@@ -11,9 +11,9 @@ class Todos {
         this.todo
             .find({})
                 .then(todos => {
-                    res.json({status: 200, todos}).status(200);
+                    res.send({status: 200, todos}).status(200);
                 })
-                .catch(err => res.status(400).json({ status: 400, message: err.message}));
+                .catch(err => res.status(400).send({ status: 400, message: err.message}));
     };
 
     getCompleted(req, res) {
@@ -21,9 +21,9 @@ class Todos {
             .find({ completed: true })
                 .then(todos => {
                     if(todos)
-                        return res.status(200).json(todos);
+                        return res.status(200).send(todos);
                     
-                    res.status(200).json({
+                    res.status(200).send({
                         message: 'No todos completed'
                     })
                     .catch(err => res.status(400).send(err.message));
@@ -34,19 +34,19 @@ class Todos {
     getById(id, req, res) {
         
         if(!Todos.isValidId(id)) {
-            return res.status(400).json({ status: 400, message: 'Bad request: invalid id' });
+            return res.status(400).send({ status: 400, message: 'Bad request: invalid id' });
         };
         
         this.todo
             .findById(id)
                 .then(todo => {
                     if(todo) 
-                        return res.status(200).json({ 
+                        return res.status(200).send({ 
                             status: 200, 
                             data: todo 
                         });
                             
-                    res.status(404).json({ status: 404, message: 'Resource not found.' });
+                    res.status(404).send({ status: 404, message: 'Resource not found.' });
                 })
                 .catch(err => res.status(404).send(err.message));
     };
@@ -64,13 +64,13 @@ class Todos {
 
                     res.status(201).send(response);
                 })
-                .catch(err => res.status(400).json(err.message));
+                .catch(err => res.status(400).send(err.message));
     };
 
     deleteById(id, req, res) {
         
         if(!Todos.isValidId(id)) {
-            return res.status(400).json({ status: 400, message: 'Bad request: invalid id' });
+            return res.status(400).send({ status: 400, message: 'Bad request: invalid id' });
         };
         
         this.todo
@@ -81,17 +81,18 @@ class Todos {
                         message: 'Resource successfully removed'
                     };
 
-                    res.status(200).json(response);
+                    res.status(200).send(response);
                 })
-                .catch(err => res.status(404).json(err.message));
+                .catch(err => res.status(404).send(err.message));
     };
 
     updateById(id, body, req, res) {
 
         let options = { new: true };
         
+        
         if(!Todos.isValidId(id)) {
-            return res.status(400).json({ status: 400, message: 'Bad request: invalid id' });
+            return res.status(400).send({ status: 400, message: 'Bad request: invalid id' });
         };
 
         body.completedAt = Todos.isCompleted(body) ? new Date().getTime() : null;
@@ -102,15 +103,15 @@ class Todos {
                 .then(todo => {
                      
                     if(todo) 
-                        return res.status(200).json({ 
+                        return res.status(200).send({ 
                             status: 200, 
                             data: todo 
                         });
                     
-                    res.status(404).json({ status: 404, message: 'Resource not found' });
+                    res.status(404).send({ status: 404, message: 'Resource not found' });
 
                 })
-                .catch(err => res.status(400).json(err.message));
+                .catch(err => res.status(400).send(err.message));
     };
 
     static isValidId(id) {

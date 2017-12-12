@@ -1,15 +1,17 @@
 const express = require('express');
+const router = express.Router();
 
-const router = require('express').Router();
-const todosRoutes = require('./todo');
+// Routes
+const todos = require('./todo');
+const users = require('./user');
 
-router.use('/todos', todosRoutes);
+router.use('/users', users);
+router.use('/todos', todos);
 router.get('/', (req, res) => {
     res.json({
         details: 'Todo API',
         version: 1
     });
 });
-
 
 module.exports = router;
