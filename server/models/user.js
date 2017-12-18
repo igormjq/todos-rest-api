@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 let UserSchema = new mongoose.Schema({
     email: {
@@ -31,6 +32,15 @@ let UserSchema = new mongoose.Schema({
     }]
 });
 
+// Overrides how user is fetched in order not to send some props
+UserSchema.methods.toJSON = function() {
+    const user = this;
+    let userObject = user.toObject();
+
+    return _.pick(userObject, ['_id','email']);
+};
+
+// Generates JWS
 UserSchema.methods.generateAuthToken = function() {
     const user = this;
     const access = 'auth';
