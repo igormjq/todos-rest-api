@@ -16,6 +16,22 @@ class Users {
         .catch(err => res.status(409).send(Users.sendError(err)));
   };
 
+  findByToken(req, res) {
+    let token = req.header('x-auth');
+
+    this.users
+      .findByToken(token)
+        .then(user => {
+          
+          if(!user) {
+            return Promise.reject('JsonWebTokenError');
+          };
+
+          res.send(user);
+        })
+        .catch(err => res.status(401).send(Users.sendError(err)));
+  }
+
   static sendError(e) {
 
     let error = {
@@ -29,7 +45,10 @@ class Users {
     } else if (e.code === 11000) {
       error.status = 409;
       error.message = 'E-mail address already in use. Duplicates not allowed.';
-    };
+    } else if (e.name === 'JsonWebTokenError') {
+      error.status = 401;
+      error.message = 'Invalid token';
+    }
 
     return error;
 
