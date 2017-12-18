@@ -1,5 +1,4 @@
 const express = require('express');
-const _ = require('lodash');
 const Controller = require('../controllers/users');
 
 const router = express.Router();
@@ -9,10 +8,7 @@ const UserController = new Controller(User);
 
 router.route('/')
   .post((req, res) => {
-    let user = _.pick(req.body, ['email', 'password']);
-
-    UserController.createNewUser(user, req, res);
-    
+    UserController.createNewUser(req, res); 
   });
 
 module.exports = router;

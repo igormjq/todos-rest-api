@@ -1,21 +1,19 @@
+const _ = require('lodash');
+
 class Users {
   constructor(model) {
     this.users = model;
   }
 
-  createNewUser(user, req, res) {
-    this.users.create(user)
-      .then(u => {
-        res
-          .status(200)
-          .location(`/users/${u._id}`)
-          .send({ status: 201, message: 'User created' });
-      })
-      .catch(e => {
-        res
-          .status(409)
-          .send(Users.sendError(e));
-      });
+  createNewUser(req, res) {
+    let props = _.pick(req.body, ['email', 'password']);
+    let user = new this.users(props);
+  
+    user
+      .save()
+        .then(() => user.generateAuthToken())
+        .then(token => res.header('x-auth', token).status(201).send(user))
+        .catch(err => res.status(409).send(Users.sendError(err)));
   };
 
   static sendError(e) {
