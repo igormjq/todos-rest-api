@@ -20,6 +20,19 @@ class Users {
     res.send(req.user);
   };
 
+  loginUser(req, res) {
+    let targetUser = _.pick(req.body, ['email', 'password']);
+
+    this.users
+      .findByCredentials(targetUser.email, targetUser.password)
+        .then(user => {
+          user.generateAuthToken().then(token => {
+            res.header('x-auth', token).status(201).send(user);
+          })
+        })
+        .catch(err => console.log(err));
+  };
+
   static sendError(e) {
 
     let error = {

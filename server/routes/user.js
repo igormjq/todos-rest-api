@@ -12,10 +12,17 @@ router.route('/')
     UserController.createNewUser(req, res); 
   });
 
+router.route('/login')
+  .post((req, res) => {
+    UserController.loginUser(req, res);
+  });
+
 router.use(auth)
 .route('/me')
   .get((req, res) => {
     UserController.findByToken(req, res);
   });
+
+
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const User = require('../models/user');
 
 const auth = (req, res, next) => {
-
+  
   let token = req.header('x-auth');
   
       User

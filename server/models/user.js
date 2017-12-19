@@ -55,7 +55,6 @@ UserSchema.methods.generateAuthToken = function() {
 
 // Class method (only the model) to find one user by token
 UserSchema.statics.findByToken = function(token) {
-    const User = this; // refers to the model itself;
     let decoded;
 
     // Verifies the user's token stored in the header;
@@ -65,7 +64,7 @@ UserSchema.statics.findByToken = function(token) {
         return Promise.reject(e);
     }
 
-    return User.findOne({
+    return this.findOne({
         _id: decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
@@ -73,18 +72,30 @@ UserSchema.statics.findByToken = function(token) {
     
 };
 
+UserSchema.statics.findByCredentials = function(email, password) {
+    return this.findOne({ email })
+        .then(user => {
+            
+            if(!user) {
+                return Promise.reject();
+            };
+            
+            return bcrypt.compare(password, user.password)
+                .then(res => !!res ? user : Promise.reject())
+        });
+};
+
 // Runs before each document is saved
 UserSchema.pre('save', function(next) {
-    let user = this;
-
-    if(user.isModified('password')) {
+  
+    if(this.isModified('password')) {
         bcrypt
             .genSalt(10)
-                .then(salt => bcrypt.hash(user.password, salt))
+                .then(salt => bcrypt.hash(this.password, salt))
                 .then(hashedPassword => {
-                    user.password = hashedPassword;
+                    this.password = hashedPassword;
                     next();
-                })
+                });
     } else {
         next();
     }
