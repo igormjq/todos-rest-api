@@ -1,34 +1,23 @@
 const { SHA256 } = require('crypto-js');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
-let data = { 
-  id: 10
-};
+let pass = 'cerkinha1';
+let hashed = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1YTM4ODIxN2Y5M2FiMTE3NGFiYjA5MWYiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTEzNjUyNzU5fQ.2RFib_Rau3ko6-j3WBJBnOfIdMu_ZAx-MOQDv-NDnco';
 
-let token = jwt.sign(data, '123abc');
+// Generates salt and hashes the password
 
-console.log(token);
+// bcrypt.genSalt(10)
+//   .then(salt => {
+//     return bcrypt.hash(pass, salt);
+//   })
+//   .then(p => console.log(`password ${p}`))
+//   .catch(err => console.log(err));
 
-let decoded = jwt.verify(token + '1', '123abc');
 
-console.log('decoded', decoded);
+// Compares the plain text password to the hashed password stored in database
 
-// let data = {
-//   id: 4
-// };
-
-// let token = {
-//   data,
-//   hash: SHA256(JSON.stringify(data) + 'secret').toString()
-// };
-
-// // token.data.id = 5;
-// // token.hash = SHA256(JSON.stringify(token.data)).toString();
-
-// let expectedHash = SHA256(JSON.stringify(token.data) + 'secret').toString();
-
-// if(expectedHash === token.hash) {
-//   console.log('Not changed');
-// } else {
-//   console.log('ALEEEEEEEEEEEEEEEEEEEERT! CHANGED!');
-// }
+// bcrypt
+//   .compare(pass, hashed)
+//     .then(p => console.log(p))
+//     .catch(err => console.log(err));

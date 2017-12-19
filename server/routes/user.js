@@ -12,8 +12,7 @@ router.route('/')
     UserController.createNewUser(req, res); 
   });
 
-router
-.use(auth)
+router.use(auth)
 .route('/me')
   .get((req, res) => {
     UserController.findByToken(req, res);
