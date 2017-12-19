@@ -17,20 +17,8 @@ class Users {
   };
 
   findByToken(req, res) {
-    let token = req.header('x-auth');
-
-    this.users
-      .findByToken(token)
-        .then(user => {
-          
-          if(!user) {
-            return Promise.reject('JsonWebTokenError');
-          };
-
-          res.send(user);
-        })
-        .catch(err => res.status(401).send(Users.sendError(err)));
-  }
+    res.send(req.user);
+  };
 
   static sendError(e) {
 
