@@ -29,16 +29,10 @@ router
         TodoController.getById(req, res);
     })
     .delete((req, res) => {
-        let id = req.params.id;
-
-        TodoController.deleteById(id, req, res);
-
+        TodoController.deleteById(req, res);
     })
     .patch((req, res) => {
-        let id = req.params.id;
-        let body = _.pick(req.body, ['text', 'completed']);
-
-        TodoController.updateById(id, body, req, res);
+        TodoController.updateById(req, res);
     });
 
 module.exports = router;

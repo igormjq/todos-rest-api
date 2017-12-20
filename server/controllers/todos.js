@@ -38,7 +38,6 @@ class Todos {
             _id,
             _creator: req.user._id
         };
-        console.log(query);
 
         if(!Todos.isValidId(_id)) {
             return res.status(400).send({ status: 400, message: 'Bad request: invalid id' });
@@ -77,31 +76,51 @@ class Todos {
                 .catch(err => res.status(400).send(err.message));
     };
 
-    deleteById(id, req, res) {
+    deleteById(req, res) {
+        let _id = req.params.id;
         
-        if(!Todos.isValidId(id)) {
+        let query = {
+            _id,
+            _creator: req.user._id
+        };
+
+        console.log(query);
+
+        if(!Todos.isValidId(_id)) {
             return res.status(400).send({ status: 400, message: 'Bad request: invalid id' });
         };
         
         this.todo
-            .findByIdAndRemove(id)
+            .findOneAndRemove(query)
                 .then(doc => {
                     let response = {
-                        status: 200,
+                        status: 204,
                         message: 'Resource successfully removed'
                     };
 
-                    res.status(200).send(response);
+                    if(doc) {
+                        return res.status(204).send(response);
+                    }
+
+                    res.status(400).send({ status: 400, message: 'Unable to delete resource' });
+
+                    
                 })
                 .catch(err => res.status(404).send(err.message));
     };
 
-    updateById(id, body, req, res) {
+    updateById(req, res) {
 
         let options = { new: true };
+        let _id = req.params.id;
+        let query = {
+            _id,
+            _creator: req.user._id
+        };
+
+        let body = _.pick(req.body, ['text', 'completed']);
         
-        
-        if(!Todos.isValidId(id)) {
+        if(!Todos.isValidId(_id)) {
             return res.status(400).send({ status: 400, message: 'Bad request: invalid id' });
         };
 
@@ -109,7 +128,7 @@ class Todos {
         body.complete = !!body.completedAt;
 
         this.todo
-            .findByIdAndUpdate(id, { $set: body }, options)
+            .findOneAndUpdate(query, { $set: body }, options)
                 .then(todo => {
                      
                     if(todo) 
@@ -118,7 +137,7 @@ class Todos {
                             data: todo 
                         });
                     
-                    res.status(404).send({ status: 404, message: 'Resource not found' });
+                    res.status(404).send({ status: 400, message: 'Unable to update resource' });
 
                 })
                 .catch(err => res.status(400).send(err.message));
