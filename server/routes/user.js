@@ -23,6 +23,10 @@ router.use(auth)
     UserController.findByToken(req, res);
   });
 
-
+router.use(auth)
+  .route('/me/token')
+    .delete((req, res) => {
+      UserController.removeToken(req, res);
+    });
 
 module.exports = router;

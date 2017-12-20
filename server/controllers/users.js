@@ -20,6 +20,23 @@ class Users {
     res.send(req.user);
   };
 
+  removeToken(req, res) {
+    let user = req.user; // comes from the request object when authenticated
+    let token = req.token;
+    let filter = {
+      $pull: {
+        tokens: { token }
+      }
+    };
+
+    user
+      .update(filter)
+        .then((u) => {
+          res.status(204).send({status: 204, message: 'User successfully logged out'});
+        })
+        .catch(err => res.status(400));
+  };
+
   loginUser(req, res) {
     let targetUser = _.pick(req.body, ['email', 'password']);
 
