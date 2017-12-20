@@ -9,11 +9,11 @@ class Todos {
 
     getAll(req, res) {
         this.todo
-            .find({})
+            .find({ _creator: req.user._id })
                 .then(todos => {
-                    res.send({status: 200, todos}).status(200);
+                    res.send({ status: 200, todos }).status(200);
                 })
-                .catch(err => res.status(400).send({ status: 400, message: err.message}));
+                .catch(err => res.status(400).send({ status: 400, message: err.message }));
     };
 
     getCompleted(req, res) {
@@ -31,14 +31,21 @@ class Todos {
                 
     };
 
-    getById(id, req, res) {
-        
-        if(!Todos.isValidId(id)) {
+    getById(req, res) {
+        let _id = req.params.id;
+    
+        let query = {
+            _id,
+            _creator: req.user._id
+        };
+        console.log(query);
+
+        if(!Todos.isValidId(_id)) {
             return res.status(400).send({ status: 400, message: 'Bad request: invalid id' });
         };
         
         this.todo
-            .findById(id)
+            .findOne(query)
                 .then(todo => {
                     if(todo) 
                         return res.status(200).send({ 
@@ -51,7 +58,10 @@ class Todos {
                 .catch(err => res.status(404).send(err.message));
     };
 
-    create(todo, req, res) {
+    create(req, res) {
+        let todo = req.body;
+        todo._creator = req.user;
+
         this.todo
             .create(todo)
                 .then(data => {
