@@ -17,22 +17,23 @@ router
             TodoController.create(req, res);
         });
 
-router.route('/complete')
-    .get((req, res) => {
-        TodoController.getCompleted(req, res);
-    });
+router
+    .route('/complete')
+        .get((req, res) => {
+            TodoController.getCompleted(req, res);
+        });
 
 router
-.use(auth)
-.route('/:id')
-    .get((req, res) => {
-        TodoController.getById(req, res);
-    })
-    .delete((req, res) => {
-        TodoController.deleteById(req, res);
-    })
-    .patch((req, res) => {
-        TodoController.updateById(req, res);
-    });
+    .use(auth)
+    .route('/:id')
+        .get((req, res) => {
+            TodoController.getById(req, res);
+        })
+        .delete((req, res) => {
+            TodoController.deleteById(req, res);
+        })
+        .patch((req, res) => {
+            TodoController.updateById(req, res);
+        });
 
 module.exports = router;
